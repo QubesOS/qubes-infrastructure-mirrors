@@ -20,7 +20,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-'''Aggregator for checker'''
+"""Aggregator for checker"""
 
 import argparse
 import datetime
@@ -30,25 +30,33 @@ import urllib.parse
 
 parser = argparse.ArgumentParser()
 
-parser.add_argument('paths', metavar='RESULT',
+parser.add_argument(
+    "paths",
+    metavar="RESULT",
     type=pathlib.Path,
-    nargs='+',
-    help='path to result.json')
+    nargs="+",
+    help="path to result.json",
+)
+
 
 class Check:
-    '''A point-in-time check against several mirrors'''
+    """A point-in-time check against several mirrors"""
+
     # pylint: disable=too-few-public-methods
     def __init__(self, obj):
-        self.path = obj['path']
-        self.utcnow = datetime.datetime.strptime(obj['utcnow'],
-            '%Y-%m-%dT%H:%M:%SZ')
-        self.mirrors = obj['mirrors']
+        self.path = obj["path"]
+        self.utcnow = datetime.datetime.strptime(
+            obj["utcnow"], "%Y-%m-%dT%H:%M:%SZ"
+        )
+        self.mirrors = obj["mirrors"]
 
     def __lt__(self, other):
         return self.utcnow < other.utcnow
 
+
 class ReportFormatter:
-    '''Generate a report based on mirror checks'''
+    """Generate a report based on mirror checks"""
+
     def __init__(self, checks):
         self.checks = sorted(checks)
         mirrors = set()
@@ -59,50 +67,64 @@ class ReportFormatter:
 
     @staticmethod
     def _url_sort_key(url):
-        '''Used as key= argument for sorting :py:func:`urllib.parse.urlsplit`'''
+        """Used as key= argument for sorting :py:func:`urllib.parse.urlsplit`"""
         url = urllib.parse.urlsplit(url)
-        if url.netloc.endswith('.qubes-os.org'):
+        if url.netloc.endswith(".qubes-os.org"):
             # sort this as first element
             return ()
-        return (tuple(reversed(url.netloc.strip('.').split('.'))),
-                url.scheme, url.path)
+        return (
+            tuple(reversed(url.netloc.strip(".").split("."))),
+            url.scheme,
+            url.path,
+        )
 
     def get_lines(self):
-        '''Generate lines for printing'''
-        yield '\n'.join('{:3d} {}'.format(i, mirror)
-            for i, mirror in enumerate(self.mirrors))
+        """Generate lines for printing"""
+        yield "\n".join(
+            "{:3d} {}".format(i, mirror)
+            for i, mirror in enumerate(self.mirrors)
+        )
 
-        yield '{:20s}  {}'.format('TIMESTAMP',
-            ' '.join('{!s:7s}'.format(i) for i in range(len(self.mirrors))))
+        yield "{:20s}  {}".format(
+            "TIMESTAMP",
+            " ".join("{!s:7s}".format(i) for i in range(len(self.mirrors))),
+        )
 
         for check in self.checks:
-            yield '{:%Y-%m-%d %H:%M:%SZ}  {}'.format(check.utcnow, ' '.join(
-                self.format_cell(check.mirrors.get(mirror))[:7].rjust(7)
-                    for mirror in self.mirrors))
+            yield "{:%Y-%m-%d %H:%M:%SZ}  {}".format(
+                check.utcnow,
+                " ".join(
+                    self.format_cell(check.mirrors.get(mirror))[:7].rjust(7)
+                    for mirror in self.mirrors
+                ),
+            )
 
     @staticmethod
     def format_cell(mirror):
-        '''Format a single cell in table based on mirror's dict'''
+        """Format a single cell in table based on mirror's dict"""
         if mirror is None:
-            return '-'
+            return "-"
 
-        if mirror.get('error') is not None:
-            return 'ERROR'
+        if mirror.get("error") is not None:
+            return "ERROR"
 
-        if mirror.get('status') is not None and not (
-                200 <= mirror['status'] < 300):
-            return '!{}'.format(mirror['status'])
+        if mirror.get("status") is not None and not (
+            200 <= mirror["status"] < 300
+        ):
+            return "!{}".format(mirror["status"])
 
-        return mirror['sha256']
+        return mirror["sha256"]
 
 
 def main(args=None):
     # pylint: disable=missing-docstring
     args = parser.parse_args(args)
-    report = ReportFormatter(Check(json.load(path.open()))
-        for path in args.paths)
+    report = ReportFormatter(
+        Check(json.load(path.open())) for path in args.paths
+    )
     for line in report.get_lines():
         print(line)
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     main()

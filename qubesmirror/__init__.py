@@ -18,68 +18,81 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-'''Simple mirror manager for yum repos, as used in Qubes OS infra.'''
+"""Simple mirror manager for yum repos, as used in Qubes OS infra."""
 
-__version__ = '2.0'
+__version__ = "2.1"
 
 import argparse
-import hashlib
 import operator
 import pathlib
-import posixpath
-import sys
 
-import lxml.etree
 
 class Mirror(tuple):
-    '''A representation of a mirror'''
-    def __new__(cls, url, subdir='.'):
+    """A representation of a mirror"""
+
+    def __new__(cls, url, subdir="."):
         return super().__new__(cls, (url, subdir))
+
     def __repr__(self):
-        return '{}(url={!r}, subdir={!r})'.format(
-            type(self).__name__, self.url, self.subdir)
-    url = property(operator.itemgetter(0),
-        doc='Base URL for the mirror')
-    subdir = property(operator.itemgetter(1),
-        doc='A subdirectory mirrored, or \'.\' if not a partial mirror')
+        return "{}(url={!r}, subdir={!r})".format(
+            type(self).__name__, self.url, self.subdir
+        )
+
+    url = property(operator.itemgetter(0), doc="Base URL for the mirror")
+    subdir = property(
+        operator.itemgetter(1),
+        doc="A subdirectory mirrored, or '.' if not a partial mirror",
+    )
+
 
 def read_mirrors(path):
-    '''Read mirror file
+    """Read mirror file
 
     Format:
         - one mirror URL per line
         - after whitespace, optional subdirectory
             (if it does not mirror whole ``--base``)
         - empty and ``#`` lines are ignored
-    '''
+    """
     with open(str(path)) as file:
         for line in file:
             line = line.strip()
-            if not line or line[0] == '#':
+            if not line or line[0] == "#":
                 continue
             yield Mirror(*line.split())
 
+
 class MirrorsAction(argparse.Action):
-    '''Action which will load mirrors.list file'''
+    """Action which will load mirrors.list file"""
+
     # pylint: disable=too-few-public-methods
     def __call__(self, parser, namespace, values, option_string=None):
-        setattr(namespace, 'mirrors', list(read_mirrors(pathlib.Path(values))))
+        setattr(namespace, "mirrors", list(read_mirrors(pathlib.Path(values))))
+
 
 def get_common_parser():
     # pylint: disable=missing-docstring
     parser = argparse.ArgumentParser()
 
-    parser.add_argument('--base', '--cwd', '-b', metavar='PATH',
+    parser.add_argument(
+        "--base",
+        "--cwd",
+        "-b",
+        metavar="PATH",
         type=pathlib.Path,
-        help='base directory for repositories (default: %(default)r)')
+        help="base directory for repositories (default: %(default)r)",
+    )
 
-    parser.add_argument('mirrors', metavar='MIRRORLIST',
+    parser.add_argument(
+        "mirrors",
+        metavar="MIRRORLIST",
         action=MirrorsAction,
-        help='file to read the mirror list from')
+        help="file to read the mirror list from",
+    )
 
-    parser.add_argument('repomd', metavar='REPOMD',
-        type=pathlib.Path,
-        help='path to repomd.xml')
+    parser.add_argument(
+        "repomd", metavar="REPOMD", type=pathlib.Path, help="path to repomd.xml"
+    )
 
-    parser.set_defaults(base='.')
+    parser.set_defaults(base=".")
     return parser

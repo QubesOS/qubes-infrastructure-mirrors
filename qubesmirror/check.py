@@ -18,7 +18,7 @@
 # 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
 #
 
-'''Checker for mirrors to measure delay in syncing'''
+"""Checker for mirrors to measure delay in syncing"""
 
 import asyncio
 import datetime
@@ -33,12 +33,15 @@ from . import get_common_parser
 
 parser = get_common_parser()
 
+
 class MirrorChecker:
-    '''Checker for single mirror'''
+    """Checker for single mirror"""
+
     def __init__(self, path, base, mirror):
         self.mirror = mirror
-        self.url = posixpath.join(mirror.url,
-            str(path.relative_to(base / mirror.subdir)))
+        self.url = posixpath.join(
+            mirror.url, str(path.relative_to(base / mirror.subdir))
+        )
 
         self.sha256 = None
         self.status = None
@@ -46,10 +49,10 @@ class MirrorChecker:
         self.history = None
 
     async def check(self, session):
-        '''Execute the checker
+        """Execute the checker
 
         :param aiohttp.ClientSession session: aiohttp session
-        '''
+        """
         try:
             digest = hashlib.sha256()
             async with session.get(self.url) as response:
@@ -65,19 +68,25 @@ class MirrorChecker:
                         self.sha256 = digest.hexdigest()
                         return
                     digest.update(chunk)
-        except Exception as err: # pylint: disable=broad-except
+        except Exception as err:  # pylint: disable=broad-except
             self.error = str(err)
 
     def asdict(self):
         # pylint: disable=missing-docstring
-        return {'status': self.status, 'history': self.history,
-                'sha256': self.sha256, 'error': self.error}
+        return {
+            "status": self.status,
+            "history": self.history,
+            "sha256": self.sha256,
+            "error": self.error,
+        }
+
 
 async def main(args=None):
     # pylint: disable=missing-docstring
     args = parser.parse_args(args)
-    checkers = [MirrorChecker(args.repomd, args.base, mirror)
-        for mirror in args.mirrors]
+    checkers = [
+        MirrorChecker(args.repomd, args.base, mirror) for mirror in args.mirrors
+    ]
     utcnow = datetime.datetime.utcnow()
 
     async with aiohttp.ClientSession() as session:
@@ -86,16 +95,26 @@ async def main(args=None):
             try:
                 futures.append(checker.check(session))
             except ValueError:  # raised by Path.relative_to()
-                sys.stderr.write('file {} not mirrored in {}\n'.format(
-                    args.repomd, checker.url))
+                sys.stderr.write(
+                    "file {} not mirrored in {}\n".format(
+                        args.repomd, checker.url
+                    )
+                )
         await asyncio.gather(*futures)
 
-    json.dump({
-            'utcnow': utcnow.strftime('%Y-%m-%dT%H:%M:%SZ'),
-            'path': str(args.repomd),
-            'mirrors': {checker.mirror.url: checker.asdict()
-                for checker in checkers}
-        }, sys.stdout, indent=4, sort_keys=True)
+    json.dump(
+        {
+            "utcnow": utcnow.strftime("%Y-%m-%dT%H:%M:%SZ"),
+            "path": str(args.repomd),
+            "mirrors": {
+                checker.mirror.url: checker.asdict() for checker in checkers
+            },
+        },
+        sys.stdout,
+        indent=4,
+        sort_keys=True,
+    )
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.get_event_loop().run_until_complete(main())
