@@ -1,9 +1,0 @@
-dist: trusty
-language: python
-python:
-  - '3.5'
-install:
-  - pip install pylint aiohttp jinja2 lxml
-script:
-  - pylint qubesmirror
-

@@ -44,8 +44,7 @@ DEFAULT_HASHES = [
     'md5',
     'sha1',
     'sha256',
-    'sha512',
-    'ripemd160',
+    'sha512'
 ]
 
 METALINK3 = jinja2.Template('''\
