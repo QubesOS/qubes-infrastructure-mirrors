@@ -1,11 +1,12 @@
 #!/usr/bin/python3
 # vim: fileencoding=utf-8
 
-import os
 import pathlib
+
 import setuptools
 
 from qubesmirror import __version__
+
 assert __version__ == pathlib.Path('version').read_text().strip()
 
 if __name__ == '__main__':
