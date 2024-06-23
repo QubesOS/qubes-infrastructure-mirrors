@@ -29,7 +29,7 @@ import sys
 
 import aiohttp
 
-from . import get_common_parser
+from qubesmirror import get_common_parser
 
 parser = get_common_parser()
 

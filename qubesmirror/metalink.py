@@ -31,8 +31,8 @@ import sys
 import jinja2
 import lxml.etree
 
-from . import get_common_parser
-from . import __version__ as _version
+from qubesmirror import get_common_parser
+from qubesmirror import __version__ as _version
 
 XML_NAMESPACES = {
     "metalink3": "http://www.metalinker.org/",
