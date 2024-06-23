@@ -1,0 +1,28 @@
+default:
+  tags:
+    - vm
+
+include:
+  - file: /common.yml
+    project: QubesOS/qubes-continuous-integration
+
+stages:
+  - checks
+  - build
+
+lint:
+  extends: .lint
+  script:
+    - black $BLACK_ARGS qubesmirror
+
+legacy:
+  stage: build
+  script:
+    - python3 setup.py build
+
+python-build:
+  stage: build
+  before_script:
+    - sudo dnf install -y python3-build
+  script:
+    - python3 -m build
