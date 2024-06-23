@@ -1,16 +1,31 @@
-[tool.poetry]
-name = "qubesmirrore"
+[project]
+name = "qubesmirror"
 version = "2.1"
 description = "Simple mirror manager for yum repos, as used in Qubes OS infra."
-license = "GPL2+"
+license = { text = "GPL2+" }
 authors = [
-    "Wojtek Porczyk <woju@invisiblethingslab.com>"
+  {name = "Wojtek Porczyk", email = "woju@invisiblethingslab.com" }
 ]
-repository = "https://github.com/QubesOS/qubes-infrastructure-mirrors"
 
-[tool.poetry.dependencies]
+maintainers = [
+  {name = "Marek Marczykowski-Górecki", email = "marmarek@invisiblethingslab.com" },
+  {name = "Frédéric Pierret", email = "frederic@invisiblethingslab.com" }
+]
+
+[project.urls]
+"Homepage" = "https://github.com/QubesOS/qubes-infrastructure-mirrors"
+
+[dependencies]
 python = ">=3.8"
 aiohttp = ">=3.8.1"
 
-[tool.poetry.scripts]
+[project.scripts]
 mkmetalink = "qubesmirror.metalink:main"
+
+[build-system]
+requires = ["setuptools>=51.0.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["qubesmirror*"]
