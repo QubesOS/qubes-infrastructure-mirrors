@@ -12,8 +12,8 @@ stages:
 
 lint:
   extends: .lint
-  script:
-    - black $BLACK_ARGS qubesmirror
+  variables:
+    DIR: qubesmirror
 
 legacy:
   stage: build
