@@ -87,7 +87,9 @@ class ReportFormatter:
 
         yield "{:20s}  {}".format(
             "TIMESTAMP",
-            " ".join("{!s:7s}".format(i) for i in range(len(self.mirrors))),
+            " ".join(
+                "{!s:7s}".format(str(i)) for i in range(len(self.mirrors))
+            ),
         )
 
         for check in self.checks:

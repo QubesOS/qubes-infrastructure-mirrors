@@ -298,8 +298,10 @@ def main(args=None):
             file=repomd,
             hashtypes=DEFAULT_HASHES,
             urls=urls,
-            utcnow=datetime.datetime.utcnow(),
-            generator="{}/{}".format(__name__.split(".")[0], _version),
+            utcnow=datetime.datetime.now(datetime.UTC),
+            generator="{}/{}".format(
+                __name__.split(".", maxsplit=1)[0], _version
+            ),
         )
     )
     sys.stdout.close()

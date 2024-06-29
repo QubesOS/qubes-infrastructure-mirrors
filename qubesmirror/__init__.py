@@ -54,7 +54,7 @@ def read_mirrors(path):
             (if it does not mirror whole ``--base``)
         - empty and ``#`` lines are ignored
     """
-    with open(str(path)) as file:
+    with open(str(path), encoding="utf-8") as file:
         for line in file:
             line = line.strip()
             if not line or line[0] == "#":

@@ -87,7 +87,7 @@ async def main(args=None):
     checkers = [
         MirrorChecker(args.repomd, args.base, mirror) for mirror in args.mirrors
     ]
-    utcnow = datetime.datetime.utcnow()
+    utcnow = datetime.datetime.now(datetime.UTC)
 
     async with aiohttp.ClientSession() as session:
         futures = []

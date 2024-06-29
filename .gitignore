@@ -1,1 +1,4 @@
 qubesmirror/**/*.py[co]
+qubesmirror.egg-info
+build
+dist
