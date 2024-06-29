@@ -2,6 +2,9 @@ default:
   tags:
     - vm
 
+variables:
+  PYREQUIREMENTS: requirements.txt
+
 include:
   - file: /common.yml
     project: QubesOS/qubes-continuous-integration
