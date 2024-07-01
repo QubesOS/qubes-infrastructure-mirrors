@@ -32,6 +32,7 @@ import sys
 import jinja2
 import lxml.etree
 
+# pylint: disable=wrong-import-position
 sys.path.insert(0, os.fspath(pathlib.Path(__file__).parent.parent))
 
 from qubesmirror import get_common_parser
