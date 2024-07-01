@@ -24,12 +24,15 @@ import argparse
 import collections
 import datetime
 import hashlib
+import os
 import pathlib
 import posixpath
 import sys
 
 import jinja2
 import lxml.etree
+
+sys.path.insert(0, os.fspath(pathlib.Path(__file__).parent.parent))
 
 from qubesmirror import get_common_parser
 from qubesmirror import __version__ as _version
