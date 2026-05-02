@@ -80,7 +80,8 @@ def get_common_parser():
         "-b",
         metavar="PATH",
         type=pathlib.Path,
-        help="base directory for repositories (default: %(default)r)",
+        default=".",
+        help="base directory for repositories (default: %(default)s)",
     )
 
     parser.add_argument(
@@ -94,5 +95,4 @@ def get_common_parser():
         "repomd", metavar="REPOMD", type=pathlib.Path, help="path to repomd.xml"
     )
 
-    parser.set_defaults(base=".")
     return parser
