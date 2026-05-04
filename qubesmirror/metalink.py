@@ -267,7 +267,7 @@ parser.add_argument(
     metavar="COUNT",
     type=int,
     help="maximum count of alternates, not including main file; 0 to disable"
-    " (default: %(default)d)",
+    " (default: %(default)s)",
 )
 
 parser.add_argument(
@@ -275,7 +275,7 @@ parser.add_argument(
     metavar="SECONDS",
     type=int,
     help="maximum age of alternates, as seconds between main file and"
-    " alternate; 0 to disable (default: %(default)d)",
+    " alternate; 0 to disable (default: %(default)s)",
 )
 
 parser.set_defaults(
