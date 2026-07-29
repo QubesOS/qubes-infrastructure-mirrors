@@ -46,8 +46,7 @@ XML_NAMESPACES = {
 
 DEFAULT_HASHES = ["md5", "sha1", "sha256", "sha512"]
 
-METALINK3 = jinja2.Template(
-    """\
+METALINK3 = jinja2.Template("""\
 <?xml version="1.0" encoding="utf-8"?>
 <metalink version="3.0"
         generator="{{ generator }}"
@@ -88,14 +87,12 @@ METALINK3 = jinja2.Template(
         </file>
     </files>
 </metalink>
-"""
-)
+""")
 
 #
 # RFC5854-compliant metalink, in case someone in Fedora decided to update
 #
-METALINK4 = jinja2.Template(
-    """\
+METALINK4 = jinja2.Template("""\
 <?xml version="1.0" encoding="utf-8"?>
 <metalink
         xmlns="urn:ietf:params:xml:ns:metalink"
@@ -117,8 +114,7 @@ METALINK4 = jinja2.Template(
         </file>
     </files>
 </metalink>
-"""
-)
+""")
 
 
 class RepoMD:
